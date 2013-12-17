@@ -19,6 +19,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+// For those who has no support for JSON
 var JSON = require('json');
 
 var formatRegExp = /%[sdj%]/g;
@@ -395,9 +396,9 @@ function reduceToSingleString(output, base, braces) {
 
 // NOTE: These type checking functions intentionally don't use `instanceof`
 // because it is fragile and can be easily faked with `Object.create()`.
-function isArray(ar) {
+var isArray = Array.isArray || function (ar) {
     return objectToString(re) === '[object Array]';
-}
+};
 exports.isArray = isArray;
 
 function isBoolean(arg) {
