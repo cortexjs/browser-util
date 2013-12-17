@@ -1,1 +1,17 @@
-# checker [![Build Status](https://travis-ci.org/kaelzhang/node-checker.png?branch=master)](https://travis-ci.org/kaelzhang/node-checker) [![Dependency Status](https://gemnasium.com/kaelzhang/node-checker.png)](https://gemnasium.com/kaelzhang/node-checker)
+# util [![Build Status](https://travis-ci.org/cortexjs/browser-util.png?branch=master)](https://travis-ci.org/cortexjs/browser-util)
+
+A port of 'util' for cortex from node.js, make your node code run in browsers.
+
+## Usage
+
+[Node.js Utilities](http://nodejs.org/api/util.html)
+
+## Removed APIs
+
+Notice that the following APIs has been removed:
+
+- util.debug(string)
+- util.error([...])
+- util.puts([...])
+- util.print([...])
+- util.pump(readableStream, writableStream, [callback])
