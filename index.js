@@ -19,7 +19,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var shims = require('./_shims');
+var JSON = require('json');
 
 var formatRegExp = /%[sdj%]/g;
 exports.format = function(f) {
@@ -180,11 +180,11 @@ function formatValue(ctx, value, recurseTimes) {
     }
 
     // Look up the keys of the object.
-    var keys = shims.keys(value);
+    var keys = Object.keys(value);
     var visibleKeys = arrayToHash(keys);
 
     if (ctx.showHidden) {
-        keys = shims.getOwnPropertyNames(value);
+        keys = Object.getOwnPropertyNames(value);
     }
 
     // Some type of object without properties can be shortcutted.
@@ -311,9 +311,10 @@ function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
 
 function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
     var name, str, desc;
-    desc = Object.getOwnPropertyDescriptor(value, key) || {
+    desc = Object.getOwnPropertyDescriptor && Object.getOwnPropertyDescriptor(value, key) || {
         value: value[key]
     };
+
     if (desc.get) {
         if (desc.set) {
             str = ctx.stylize('[Getter/Setter]', 'special');
@@ -395,9 +396,8 @@ function reduceToSingleString(output, base, braces) {
 // NOTE: These type checking functions intentionally don't use `instanceof`
 // because it is fragile and can be easily faked with `Object.create()`.
 function isArray(ar) {
-    return Array.isArray(ar);
+    return objectToString(re) === '[object Array]';
 }
-
 exports.isArray = isArray;
 
 function isBoolean(arg) {
@@ -441,6 +441,12 @@ function isRegExp(re) {
 exports.isRegExp = isRegExp;
 
 function isObject(arg) {
+    // in 
+
+    // host objects -> true
+    // undefined -> false
+    // null -> false
+    // plain objects -> true
     return typeof arg === 'object' && arg;
 }
 exports.isObject = isObject;
@@ -504,7 +510,9 @@ function timestamp() {
 
 // log is just a thin wrapper to console.log that prepends a timestamp
 exports.log = function() {
-    console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+    if ( typeof console !== 'undefined' ) {
+        console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+    }
 };
 
 
