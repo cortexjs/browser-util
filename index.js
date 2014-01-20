@@ -19,6 +19,20 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+'use strict';
+
+var _JSON;
+
+if ( typeof JSON !== 'object' ) {
+    try {
+        _JSON = require('json');
+    } catch(e) {}
+
+} else {
+    _JSON = JSON;
+}
+
+
 var formatRegExp = /%[sdj%]/g;
 exports.format = function(f) {
     if (!isString(f)) {
@@ -42,7 +56,7 @@ exports.format = function(f) {
                 return Number(args[i++]);
             case '%j':
                 try {
-                    return JSON.stringify(args[i++]);
+                    return _JSON.stringify(args[i++]);
                 } catch (_) {
                     return '[Circular]';
                 }
@@ -266,7 +280,7 @@ function formatPrimitive(ctx, value) {
     if (isUndefined(value))
         return ctx.stylize('undefined', 'undefined');
     if (isString(value)) {
-        var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+        var simple = '\'' + _JSON.stringify(value).replace(/^"|"$/g, '')
             .replace(/'/g, "\\'")
             .replace(/\\"/g, '"') + '\'';
         return ctx.stylize(simple, 'string');
@@ -356,7 +370,7 @@ function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
         if (array && key.match(/^\d+$/)) {
             return str;
         }
-        name = JSON.stringify('' + key);
+        name = _JSON.stringify('' + key);
         if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
             name = name.substr(1, name.length - 2);
             name = ctx.stylize(name, 'name');
