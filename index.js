@@ -19,9 +19,6 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// For those who has no support for JSON
-var JSON = require('json');
-
 var formatRegExp = /%[sdj%]/g;
 exports.format = function(f) {
     if (!isString(f)) {
@@ -167,7 +164,7 @@ function formatValue(ctx, value, recurseTimes) {
         value.inspect !== exports.inspect &&
         // Also filter out any prototype objects using the circular check.
         !(value.constructor && value.constructor.prototype === value)) {
-        var ret = value.inspect(recurseTimes);
+        var ret = value.inspect(recurseTimes, ctx);
         if (!isString(ret)) {
             ret = formatValue(ctx, ret, recurseTimes);
         }
@@ -274,8 +271,13 @@ function formatPrimitive(ctx, value) {
             .replace(/\\"/g, '"') + '\'';
         return ctx.stylize(simple, 'string');
     }
-    if (isNumber(value))
+    if (isNumber(value)) {
+        // Format -0 as '-0'. Strict equality won't distinguish 0 from -0,
+        // so instead we use the fact that 1 / -0 < 0 whereas 1 / 0 > 0 .
+        if (value === 0 && 1 / value < 0)
+            return ctx.stylize('-0', 'number');
         return ctx.stylize('' + value, 'number');
+    }
     if (isBoolean(value))
         return ctx.stylize('' + value, 'boolean');
     // For some reason typeof null is "object", so special case here.
@@ -299,7 +301,6 @@ function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
             output.push('');
         }
     }
-
     keys.forEach(function(key) {
         if (!key.match(/^\d+$/)) {
             output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
@@ -315,7 +316,6 @@ function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
     desc = Object.getOwnPropertyDescriptor && Object.getOwnPropertyDescriptor(value, key) || {
         value: value[key]
     };
-
     if (desc.get) {
         if (desc.set) {
             str = ctx.stylize('[Getter/Setter]', 'special');
@@ -327,7 +327,6 @@ function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
             str = ctx.stylize('[Setter]', 'special');
         }
     }
-
     if (!hasOwnProperty(visibleKeys, key)) {
         name = '[' + key + ']';
     }
@@ -364,7 +363,8 @@ function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
         } else {
             name = name.replace(/'/g, "\\'")
                 .replace(/\\"/g, '"')
-                .replace(/(^"|"$)/g, "'");
+                .replace(/(^"|"$)/g, "'")
+                .replace(/\\\\/g, '\\');
             name = ctx.stylize(name, 'string');
         }
     }
@@ -442,13 +442,7 @@ function isRegExp(re) {
 exports.isRegExp = isRegExp;
 
 function isObject(arg) {
-    // in 
-
-    // host objects -> true
-    // undefined -> false
-    // null -> false
-    // plain objects -> true
-    return typeof arg === 'object' && arg;
+    return typeof arg === 'object' && arg !== null;
 }
 exports.isObject = isObject;
 
@@ -458,7 +452,8 @@ function isDate(d) {
 exports.isDate = isDate;
 
 function isError(e) {
-    return isObject(e) && objectToString(e) === '[object Error]';
+    return isObject(e) &&
+        (objectToString(e) === '[object Error]' || e instanceof Error);
 }
 exports.isError = isError;
 
@@ -480,7 +475,7 @@ exports.isPrimitive = isPrimitive;
 // temporarily remove isBuffer
 
 // function isBuffer(arg) {
-//     return arg && typeof arg === 'object' && typeof arg.copy === 'function' && typeof arg.fill === 'function' && typeof arg.binarySlice === 'function';
+//     return arg instanceof Buffer;
 // }
 // exports.isBuffer = isBuffer;
 
@@ -511,9 +506,7 @@ function timestamp() {
 
 // log is just a thin wrapper to console.log that prepends a timestamp
 exports.log = function() {
-    if ( typeof console !== 'undefined' ) {
-        console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
-    }
+    console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
 };
 
 
@@ -567,5 +560,4 @@ exports._extend = function(origin, add) {
 function hasOwnProperty(obj, prop) {
     return Object.prototype.hasOwnProperty.call(obj, prop);
 }
-
 
