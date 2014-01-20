@@ -1,6 +1,6 @@
 {
     "name": "util",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A port of 'util' for cortex from node.js, make your node code run in browsers.",
     "main": "index.js",
     "scripts": {
@@ -23,10 +23,6 @@
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/cortexjs/browser-util/issues"
-    },
-    "devDependencies": {
-        "mocha": "~1.13.0",
-        "chai": "~1.8.0"
     },
     "cortex": {
         "dependencies": {
