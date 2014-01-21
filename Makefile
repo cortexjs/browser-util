@@ -1,8 +1,5 @@
 -include config.mk
 
-PYTHON ?= python
-REPORTER = spec
-
 test:
 	node test/simple/test-util.js
 	node test/simple/test-util-log.js
