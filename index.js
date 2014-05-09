@@ -554,8 +554,8 @@ exports.inherits = function(ctor, superCtor) {
     } else {
         var F = function (){};
         F.prototype = superCtor.prototype;
-        ctr.prototype = new F;
-        ctr.prototype.constructor = ctor;
+        ctor.prototype = new F;
+        ctor.prototype.constructor = ctor;
     }
 };
 
