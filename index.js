@@ -195,7 +195,7 @@ function formatValue(ctx, value, recurseTimes) {
     var keys = Object.keys(value);
     var visibleKeys = arrayToHash(keys);
 
-    if (ctx.showHidden) {
+    if (ctx.showHidden && Object.getOwnPropertyNames) {
         keys = Object.getOwnPropertyNames(value);
     }
 
