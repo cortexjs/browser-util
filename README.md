@@ -6,6 +6,20 @@ A port of 'util' for cortex from node.js, make your node code run in browsers.
 
 [Node.js Utilities](http://nodejs.org/api/util.html)
 
+### util.isFunction
+
+### util.isArray
+
+### util.isError
+
+### util.isNull
+
+### util.isNullOrUndefined
+
+### util.isNumber
+
+### util.isDate
+
 ## Removed APIs
 
 Notice that the following APIs has been removed:

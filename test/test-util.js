@@ -34,6 +34,40 @@ var createObject = (function() {
   };
 })();
 
+it('isNull', function() {
+  assert(util.isNull(null));
+  assert.equal(false, util.isNull(undefined));
+  assert.equal(false, util.isNull(''));
+  assert.equal(false, util.isNull({}));
+  assert.equal(false, util.isNull([]));
+  assert.equal(false, util.isNull(0));
+});
+
+
+it('isNullOrUndefined', function() {
+  assert(util.isNullOrUndefined(null));
+  assert(util.isNullOrUndefined(undefined));
+  assert.equal(false, util.isNullOrUndefined(''));
+  assert.equal(false, util.isNullOrUndefined({}));
+  assert.equal(false, util.isNullOrUndefined([]));
+  assert.equal(false, util.isNullOrUndefined(0));
+  assert.equal(false, util.isNullOrUndefined('  '));
+});
+
+
+it('isFunction', function() {
+  assert(util.isFunction(createObject));
+  assert(util.isFunction(function() {}));
+  assert(util.isFunction(new Function()));
+  assert.equal(false, util.isFunction(null));
+  assert.equal(false, util.isFunction(/regexp/));
+  assert.equal(false, util.isFunction(new Object));
+  assert.equal(false, util.isFunction(new Error));
+  assert.equal(false, util.isFunction({}));
+});
+
+
+
 it('isArray', function() {
   // isArray
   assert.equal(true, util.isArray([]));
