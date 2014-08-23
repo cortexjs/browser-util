@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:cortexjs/browser-util.git"
+    "url": "git@github.com:cortex-packages/browser-util.git"
   },
   "keywords": [
     "checker",
@@ -22,7 +22,7 @@
   "author": "kael",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cortexjs/browser-util/issues"
+    "url": "https://github.com/cortex-packages/browser-util/issues"
   },
   "cortex": {
     "dependencies": {
